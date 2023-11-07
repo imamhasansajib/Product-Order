@@ -14,6 +14,9 @@ app.use(
 const userRoute = require("./routes/userRoute");
 app.use("/api", userRoute);
 
+const productRoute = require("./routes/productRoute");
+app.use("/api", productRoute);
+
 const port = 8000;
 app.listen(port, function () {
   console.log("Backend is running on port " + port);
