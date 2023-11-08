@@ -41,4 +41,14 @@ product_route.post(
   productController.createProduct
 );
 
+product_route.post("/get-products", productController.getProducts);
+
+product_route.post("/delete-product", productController.deleteProduct);
+
+product_route.post(
+  "/update-product",
+  upload.array("images"),
+  productController.updateProduct
+);
+
 module.exports = product_route;
