@@ -1,12 +1,42 @@
 import LayoutComponet from "../LayoutComponent";
 import { useState } from "react";
 import { Modal, Button, CloseButton } from "react-bootstrap";
+import UserService from "../../services/userService";
 
 function UserComponent() {
   const [createShow, createInvokeModal] = useState(false);
 
   const createModal = () => {
     return createInvokeModal(!createShow);
+  };
+
+  //create user data
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [mobileno, setMobileno] = useState("");
+  const [image, setImage] = useState("");
+
+  const createFormSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("mobileno", mobileno);
+
+    if (image !== "" && image.length !== 0) {
+      formData.append("image", image);
+    }
+
+    const response = await UserService.create(formData);
+    if (response.data.success === true) {
+      alert("User succesfully created!");
+    } else {
+      alert(response.data.msg);
+    }
+
+    createModal();
   };
 
   return (
@@ -25,13 +55,14 @@ function UserComponent() {
             <CloseButton onClick={createModal}>X</CloseButton>
           </Modal.Header>
 
-          <form>
+          <form onSubmit={createFormSubmit}>
             <Modal.Body>
               <input
                 type="text"
                 name="name"
                 placeholder="Enter your name"
                 class="w-100 mb-3"
+                onChange={(event) => setName(event.target.value)}
                 required
               ></input>
               <input
@@ -39,6 +70,7 @@ function UserComponent() {
                 name="email"
                 placeholder="user@mail.com"
                 class="w-100 mb-3"
+                onChange={(event) => setEmail(event.target.value)}
                 required
               ></input>
               <input
@@ -46,12 +78,14 @@ function UserComponent() {
                 name="mobileno"
                 placeholder="Enter your mobile no"
                 class="w-100 mb-3"
+                onChange={(event) => setMobileno(event.target.value)}
                 required
               ></input>
               <input
                 type="file"
                 name="image"
                 class="w-100 mb-3"
+                onChange={(event) => setImage(event.target.files[0])}
                 required
               ></input>
             </Modal.Body>
