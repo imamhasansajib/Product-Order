@@ -1,5 +1,5 @@
 import LayoutComponet from "../LayoutComponent";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Button, CloseButton } from "react-bootstrap";
 import UserService from "../../services/userService";
 
@@ -37,7 +37,19 @@ function UserComponent() {
     }
 
     createModal();
+    fetchUsers();
   };
+
+  //get all users data
+  const [users, setUsers] = useState({});
+
+  const fetchUsers = async () => {
+    setUsers(await UserService.getUsers());
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [users]);
 
   return (
     <div class="wrapper d-flex align-items-stretch">
@@ -101,6 +113,36 @@ function UserComponent() {
             </Modal.Footer>
           </form>
         </Modal>
+
+        {/* {show users data in table} */}
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>Image</th>
+            </tr>
+          </thead>
+          {users.data !== undefined && users.data.data.length > 0 && (
+            <tbody>
+              {users.data.data.map((user) => (
+                <tr>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>{user.mobileno}</td>
+                  <td>
+                    <img
+                      alt={user.name + "'s image"}
+                      src={"http://127.0.0.1:8000/api/" + user.image}
+                      style={{ width: "100px", height: "100px" }}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          )}
+        </table>
       </div>
     </div>
   );

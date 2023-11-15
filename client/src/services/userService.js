@@ -11,6 +11,12 @@ class User {
 
     return axios.post(url, formData, config);
   }
+
+  getUsers() {
+    const url = "http://127.0.0.1:8000/api/get-users";
+
+    return axios.get(url);
+  }
 }
 
 export default new User();
