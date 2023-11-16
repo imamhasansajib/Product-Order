@@ -4,10 +4,15 @@ import { Modal, Button, CloseButton } from "react-bootstrap";
 import UserService from "../../services/userService";
 
 function UserComponent() {
-  const [createShow, createInvokeModal] = useState(false);
+  const [createShow, createInvokeModal] = useState(false); //create modal
+  const [updateShow, updateInvokeModal] = useState(false); //update modal
 
   const createModal = () => {
     return createInvokeModal(!createShow);
+  };
+
+  const updateModal = () => {
+    return updateInvokeModal(!updateShow);
   };
 
   //create user data
@@ -67,13 +72,54 @@ function UserComponent() {
 
     fetchUsers();
   };
+
+  //update user data
+  const [user_id, setUser_id] = useState("");
+  const [updateName, setUpdateName] = useState("");
+  const [updateEmail, setUpdateEmail] = useState("");
+  const [updateMobileno, setUpdateMobileno] = useState("");
+  const [updateImage, setUpdateImage] = useState("");
+
+  const editUser = (user_id, name, email, mobileno) => {
+    setUser_id(user_id);
+    setUpdateName(name);
+    setUpdateEmail(email);
+    setUpdateMobileno(mobileno);
+    updateModal();
+  };
+
+  const updateFormSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append("user_id", user_id);
+    formData.append("name", updateName);
+    formData.append("email", updateEmail);
+    formData.append("mobileno", updateMobileno);
+
+    if (updateImage !== "" && updateImage.length !== 0) {
+      formData.append("image", updateImage);
+    }
+
+    const response = await UserService.update(formData);
+    if (response.data.success === true) {
+      alert(response.data.msg);
+    } else {
+      alert(response.data.msg);
+    }
+
+    updateModal();
+    fetchUsers();
+  };
+
   return (
     <div className="wrapper d-flex align-items-stretch">
       <LayoutComponet />
       <div id="content" className="p-4 p-md-5 pt-5">
         <h2 className="mb-4">Users</h2>
 
-        <Button variant="success" onClick={createModal}>
+        <Button className="mb-3" variant="success" onClick={createModal}>
           Create User
         </Button>
 
@@ -120,11 +166,11 @@ function UserComponent() {
 
             <Modal.Footer>
               <Button variant="dark" onClick={createModal}>
-                close
+                Cancel
               </Button>
 
               <Button type="submit" variant="primary">
-                Save
+                Create
               </Button>
             </Modal.Footer>
           </form>
@@ -157,6 +203,16 @@ function UserComponent() {
                   </td>
                   <td>
                     <Button
+                      variant="warning"
+                      onClick={(event) =>
+                        editUser(user._id, user.name, user.email, user.mobileno)
+                      }
+                    >
+                      Edit
+                    </Button>
+
+                    <Button
+                      className="ml-3"
                       variant="danger"
                       onClick={(event) => deleteUser(user._id)}
                     >
@@ -168,6 +224,59 @@ function UserComponent() {
             </tbody>
           )}
         </table>
+
+        {/* update user modal */}
+        <Modal show={updateShow}>
+          <Modal.Header>
+            <Modal.Title>Update User</Modal.Title>
+            <CloseButton onClick={updateModal}>X</CloseButton>
+          </Modal.Header>
+
+          <form onSubmit={updateFormSubmit}>
+            <Modal.Body>
+              <input
+                type="text"
+                name="name"
+                className="w-100 mb-3"
+                value={updateName}
+                onChange={(event) => setUpdateName(event.target.value)}
+                required
+              ></input>
+              <input
+                type="email"
+                name="email"
+                className="w-100 mb-3"
+                value={updateEmail}
+                onChange={(event) => setUpdateEmail(event.target.value)}
+                required
+              ></input>
+              <input
+                type="number"
+                name="mobileno"
+                className="w-100 mb-3"
+                value={updateMobileno}
+                onChange={(event) => setUpdateMobileno(event.target.value)}
+                required
+              ></input>
+              <input
+                type="file"
+                name="image"
+                className="w-100 mb-3"
+                onChange={(event) => setUpdateImage(event.target.files[0])}
+              ></input>
+            </Modal.Body>
+
+            <Modal.Footer>
+              <Button variant="dark" onClick={updateModal}>
+                Cancel
+              </Button>
+
+              <Button type="submit" variant="primary">
+                Update
+              </Button>
+            </Modal.Footer>
+          </form>
+        </Modal>
       </div>
     </div>
   );
