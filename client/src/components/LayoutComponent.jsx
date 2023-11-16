@@ -1,22 +1,28 @@
-function LayoutComponet()
-{
-    return (
-        <nav id="sidebar">
-				<div class="custom-menu">
-					<button type="button" id="sidebarCollapse" class="btn btn-primary">
-	          <i class="fa fa-bars"></i>
-	          <span class="sr-only">Toggle Menu</span>
-	        </button>
-        </div>
-	  		<h1><a href="#" class="logo">Order Product</a></h1>
-        <ul class="list-unstyled components mb-5">
-          <li class="active">
-            <a href="#"><span class="fa fa-user mr-3"></span>Users</a>
-          </li>
-        </ul>
+import { Button } from "react-bootstrap";
 
-    	</nav>
-    );
+function LayoutComponet() {
+  return (
+    <nav id="sidebar">
+      <div className="custom-menu">
+        <Button type="button" id="sidebarCollapse" variant="primary">
+          <i className="fa fa-bars"></i>
+          <span className="sr-only">Toggle Menu</span>
+        </Button>
+      </div>
+      <h1>
+        <a href="#" className="logo">
+          Order Product
+        </a>
+      </h1>
+      <ul className="list-unstyled components mb-5">
+        <li className="active">
+          <a href="#">
+            <span className="fa fa-user mr-3"></span>Users
+          </a>
+        </li>
+      </ul>
+    </nav>
+  );
 }
 
 export default LayoutComponet;

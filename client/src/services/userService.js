@@ -17,6 +17,16 @@ class User {
 
     return axios.get(url);
   }
+
+  deleteUser(formData) {
+    const url = "http://127.0.0.1:8000/api/delete-user";
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    return axios.post(url, formData, config);
+  }
 }
 
 export default new User();

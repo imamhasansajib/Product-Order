@@ -48,14 +48,30 @@ function UserComponent() {
   };
 
   useEffect(() => {
+    console.log("Hi");
     fetchUsers();
-  }, [users]);
+  }, []);
 
+  // delete user functionality
+  const deleteUser = async (user_id) => {
+    const formData = new FormData();
+    formData.append("user_id", user_id);
+
+    const response = await UserService.deleteUser(formData);
+
+    if (response.data.success === true) {
+      alert(response.data.msg);
+    } else {
+      alert(response.data.msg);
+    }
+
+    fetchUsers();
+  };
   return (
-    <div class="wrapper d-flex align-items-stretch">
+    <div className="wrapper d-flex align-items-stretch">
       <LayoutComponet />
-      <div id="content" class="p-4 p-md-5 pt-5">
-        <h2 class="mb-4">Users</h2>
+      <div id="content" className="p-4 p-md-5 pt-5">
+        <h2 className="mb-4">Users</h2>
 
         <Button variant="success" onClick={createModal}>
           Create User
@@ -73,7 +89,7 @@ function UserComponent() {
                 type="text"
                 name="name"
                 placeholder="Enter your name"
-                class="w-100 mb-3"
+                className="w-100 mb-3"
                 onChange={(event) => setName(event.target.value)}
                 required
               ></input>
@@ -81,7 +97,7 @@ function UserComponent() {
                 type="email"
                 name="email"
                 placeholder="user@mail.com"
-                class="w-100 mb-3"
+                className="w-100 mb-3"
                 onChange={(event) => setEmail(event.target.value)}
                 required
               ></input>
@@ -89,14 +105,14 @@ function UserComponent() {
                 type="number"
                 name="mobileno"
                 placeholder="Enter your mobile no"
-                class="w-100 mb-3"
+                className="w-100 mb-3"
                 onChange={(event) => setMobileno(event.target.value)}
                 required
               ></input>
               <input
                 type="file"
                 name="image"
-                class="w-100 mb-3"
+                className="w-100 mb-3"
                 onChange={(event) => setImage(event.target.files[0])}
                 required
               ></input>
@@ -115,19 +131,20 @@ function UserComponent() {
         </Modal>
 
         {/* {show users data in table} */}
-        <table class="table">
+        <table className="table">
           <thead>
-            <tr>
+            <tr key={"header"}>
               <th>Name</th>
               <th>Email</th>
               <th>Mobile</th>
               <th>Image</th>
+              <th>Action</th>
             </tr>
           </thead>
           {users.data !== undefined && users.data.data.length > 0 && (
             <tbody>
               {users.data.data.map((user) => (
-                <tr>
+                <tr key={user._id}>
                   <td>{user.name}</td>
                   <td>{user.email}</td>
                   <td>{user.mobileno}</td>
@@ -137,6 +154,14 @@ function UserComponent() {
                       src={"http://127.0.0.1:8000/api/" + user.image}
                       style={{ width: "100px", height: "100px" }}
                     />
+                  </td>
+                  <td>
+                    <Button
+                      variant="danger"
+                      onClick={(event) => deleteUser(user._id)}
+                    >
+                      Delete
+                    </Button>
                   </td>
                 </tr>
               ))}
