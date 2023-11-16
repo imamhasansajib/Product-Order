@@ -47,31 +47,24 @@ const deleteUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const checkUser = await User.findOne({ email: req.body.email });
+    //const checkUser = await User.findOne({ email: req.body.email });
 
     var user_id = req.body.user_id;
     var obj;
 
-    if (checkUser) {
-      return res.status(200).send({
-        success: true,
-        msg: req.body.email + " email already exitsts!",
-      });
+    if (req.file !== undefined) {
+      obj = {
+        name: req.body.name,
+        email: req.body.email,
+        mobileno: req.body.mobileno,
+        image: "/images/" + req.file.filename,
+      };
     } else {
-      if (req.file !== undefined) {
-        obj = {
-          name: req.body.name,
-          email: req.body.email,
-          mobileno: req.body.mobileno,
-          image: "/images/" + req.file.filename,
-        };
-      } else {
-        obj = {
-          name: req.body.name,
-          email: req.body.email,
-          mobileno: req.body.mobileno,
-        };
-      }
+      obj = {
+        name: req.body.name,
+        email: req.body.email,
+        mobileno: req.body.mobileno,
+      };
     }
 
     var updatedData = await User.findByIdAndUpdate(
