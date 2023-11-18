@@ -86,9 +86,31 @@ const updateProduct = async (req, res) => {
   }
 };
 
+const allProducts = async (req, res) => {
+  try {
+    var productData = await Product.aggregate([
+      {
+        $lookup: {
+          from: "users",
+          localField: "user_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+    ]);
+
+    res
+      .status(200)
+      .send({ success: true, msg: "Products Data", data: productData });
+  } catch (error) {
+    res.status(400).send({ success: false, msg: error.message });
+  }
+};
+
 module.exports = {
   createProduct,
   getProducts,
   deleteProduct,
   updateProduct,
+  allProducts,
 };

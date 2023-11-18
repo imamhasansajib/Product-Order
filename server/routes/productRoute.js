@@ -51,4 +51,6 @@ product_route.post(
   productController.updateProduct
 );
 
+product_route.get("/all-products", productController.allProducts);
+
 module.exports = product_route;
